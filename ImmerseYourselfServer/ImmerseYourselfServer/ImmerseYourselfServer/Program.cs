@@ -73,6 +73,11 @@ namespace ImmerseYourselfServer
                 {
                     GameLoop.Update();
                     nextLoop = nextLoop.AddMilliseconds(Constants.MS_PER_TICK);
+
+                    if (nextLoop > DateTime.Now)
+                    {
+                        Thread.Sleep(nextLoop - DateTime.Now);
+                    }
                 }
             }
         }

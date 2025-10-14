@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ImmerseYourselfServer")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f7bae4475d3fa97dc1b0b06c7de07d1bab4429a0")]
 [assembly: System.Reflection.AssemblyProductAttribute("ImmerseYourselfServer")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ImmerseYourselfServer")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

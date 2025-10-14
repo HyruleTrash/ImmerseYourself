@@ -33,15 +33,24 @@ namespace ImmerseYourselfServer
             DISPLAY_DEVICE device = new DISPLAY_DEVICE();
             device.cb = Marshal.SizeOf(device);
 
-            while (EnumDisplayDevices(null, count, ref device, 0))
+            // Enumerate all display devices
+            uint deviceIndex = 0;
+            while (EnumDisplayDevices(null, deviceIndex, ref device, 0))
             {
-                count++;
+                // Only count devices that are actually connected (attached)
+                if ((device.StateFlags & 0x01) != 0) // DEVICE_ATTACHED_TO_DESKTOP
+                {
+                    count++;
+                    Console.WriteLine($"Found monitor: {device.DeviceString}");
+                }
+            
                 device.cb = Marshal.SizeOf(device);
+                deviceIndex++;
             }
             
             Console.WriteLine($"Number of monitors: {count}");
             
-            Server.Start(5);
+            Server.Start(count);
             
             Console.ReadKey();
         }

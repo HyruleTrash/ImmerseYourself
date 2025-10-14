@@ -49,5 +49,6 @@ public class Server
         {
             clients.Add(i, new Client(i));
         }
+        Console.WriteLine($"Lobby of size {clients.Count} has been created!");
     }
 }

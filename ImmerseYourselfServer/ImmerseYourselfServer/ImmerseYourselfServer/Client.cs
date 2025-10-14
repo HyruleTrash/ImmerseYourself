@@ -21,40 +21,54 @@ public class Client
         private NetworkStream stream;
         private byte[] recieveBuffer;
 
-        public TCP(int _id)
+        public TCP(int id)
         {
-            id = _id;
+            this.id = id;
         }
 
-        public void Connect(TcpClient _socket)
+        public void Connect(TcpClient socket)
         {
-            socket = _socket;
-            socket.ReceiveBufferSize = dataBufferSize;
-            socket.SendBufferSize = dataBufferSize;
+            this.socket = socket;
+            this.socket.ReceiveBufferSize = dataBufferSize;
+            this.socket.SendBufferSize = dataBufferSize;
             
-            stream  = socket.GetStream();
+            stream  = this.socket.GetStream();
             
             recieveBuffer = new byte[dataBufferSize];
             
             stream.BeginRead(recieveBuffer,0, dataBufferSize, ReceiveCallback, null);
             
-            // TODO: Send welcome packet
+            ServerSend.Welcome(id, "You have joined the server!");
+        }
+
+        public void SendData(Packet packet)
+        {
+            try
+            {
+                if (socket == null)
+                    return;
+                stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error sending data to player {id}: {e.Message}");
+            }
         }
 
         private void ReceiveCallback(IAsyncResult ar)
         {
             try
             {
-                int _byteLength = stream.EndRead(ar);
-                if (_byteLength <= 0)
+                int byteLength = stream.EndRead(ar);
+                if (byteLength <= 0)
                 {
                     // TODO: disconnect
                     // stream.Close();
                     return;
                 }
                 
-                byte[] _data = new byte[_byteLength];
-                Array.Copy(recieveBuffer, _data, _byteLength);
+                byte[] data = new byte[byteLength];
+                Array.Copy(recieveBuffer, data, byteLength);
                 
                 // TODO: handle data
                 stream.BeginRead(recieveBuffer, 0, dataBufferSize, ReceiveCallback, null);

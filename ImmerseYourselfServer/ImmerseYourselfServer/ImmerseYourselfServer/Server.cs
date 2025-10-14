@@ -9,6 +9,8 @@ public class Server
     private static TcpListener TcpListener { get; set; }
     private const int port = 4377;
     public static Dictionary<int, Client> clients = new Dictionary<int, Client>();
+    public delegate void PacketHandler(int fromClient, Packet packet);
+    public static Dictionary<int, PacketHandler> packetHandlers;
 
     public static void Start(int maxClients)
     {
@@ -33,11 +35,9 @@ public class Server
 
         foreach (var (key, client) in clients)
         {
-            if (client.tcp.socket == null)
-            {
-                client.tcp.Connect(_client);
-                return;
-            }
+            if (client.tcp.socket != null) continue;
+            client.tcp.Connect(_client);
+            return;
         }
         
         Console.WriteLine($"Server is at full capacity");
@@ -45,10 +45,16 @@ public class Server
 
     private static void InitializeServerData()
     {
-        for (int i = 0; i < MaxClients; i++)
+        for (var i = 0; i < MaxClients; i++)
         {
             clients.Add(i, new Client(i));
         }
         Console.WriteLine($"Lobby of size {clients.Count} has been created!");
+        
+        packetHandlers = new Dictionary<int, PacketHandler>()
+        {
+            {(int)ClientPackets.WelcomeReceived, ServerHandle.WelcomeRecieved}
+        };
+        Console.WriteLine("Packet handlers have been registered.");
     }
 }

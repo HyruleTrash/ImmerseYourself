@@ -17,9 +17,11 @@ public class Client
     public class TCP
     {
         public TcpClient socket;
+        
         private readonly int id;
         private NetworkStream stream;
-        private byte[] recieveBuffer;
+        private Packet receivedData;
+        private byte[] receiveBuffer;
 
         public TCP(int id)
         {
@@ -34,9 +36,10 @@ public class Client
             
             stream  = this.socket.GetStream();
             
-            recieveBuffer = new byte[dataBufferSize];
+            receivedData = new Packet();
+            receiveBuffer = new byte[dataBufferSize];
             
-            stream.BeginRead(recieveBuffer,0, dataBufferSize, ReceiveCallback, null);
+            stream.BeginRead(receiveBuffer,0, dataBufferSize, ReceiveCallback, null);
             
             ServerSend.Welcome(id, "You have joined the server!");
         }
@@ -54,6 +57,41 @@ public class Client
                 Console.WriteLine($"Error sending data to player {id}: {e.Message}");
             }
         }
+        
+        private bool HandleData(byte[] data)
+        {
+            int packetLength = 0;
+            
+            receivedData.SetBytes(data);
+            
+            if (receivedData.UnreadLength() >= 4)
+            {
+                packetLength = receivedData.ReadInt();
+                if (packetLength <= 0)
+                    return true;
+            }
+
+            while (packetLength > 0 && packetLength <= receivedData.UnreadLength())
+            {
+                byte[] packetBytes = receivedData.ReadBytes(packetLength);
+                ThreadManager.ExecuteOnMainThread(() =>
+                {
+                    using var packet = new Packet(packetBytes);
+                    var packedId = packet.ReadInt();
+                    Server.packetHandlers[packedId](id, packet);
+                });
+                
+                packetLength = 0;
+                
+                if (receivedData.UnreadLength() < 4) continue;
+                
+                packetLength = receivedData.ReadInt();
+                if (packetLength <= 0)
+                    return true;
+            }
+            
+            return packetLength <= 1;
+        }
 
         private void ReceiveCallback(IAsyncResult ar)
         {
@@ -68,10 +106,10 @@ public class Client
                 }
                 
                 byte[] data = new byte[byteLength];
-                Array.Copy(recieveBuffer, data, byteLength);
+                Array.Copy(receiveBuffer, data, byteLength);
                 
-                // TODO: handle data
-                stream.BeginRead(recieveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+                receivedData.Reset(HandleData(data));
+                stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
             }
             catch (Exception e)
             {

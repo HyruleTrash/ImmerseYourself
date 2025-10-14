@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
+using System.Threading;
 
 namespace ImmerseYourselfServer
 {
@@ -24,6 +25,8 @@ namespace ImmerseYourselfServer
             [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
             public string DeviceKey;
         }
+        
+        private static bool isRunning = false;
         
         static void Main(string[] args)
         {
@@ -51,8 +54,27 @@ namespace ImmerseYourselfServer
             Console.WriteLine($"Number of monitors: {count}");
             
             Server.Start(count);
-            
-            Console.ReadKey();
+            isRunning = true;
+
+            Thread mainThread = new Thread(new ThreadStart(MainThread));
+            mainThread.Start();
+
+            // Console.ReadKey();
+        }
+
+        private static void MainThread()
+        {
+            Console.WriteLine($"Main thread started. Running at {Constants.TICKS_PER_SECOND} ticks per second.");
+            DateTime nextLoop = DateTime.Now;
+
+            while (isRunning)
+            {
+                while (nextLoop < DateTime.Now)
+                {
+                    GameLoop.Update();
+                    nextLoop = nextLoop.AddMilliseconds(Constants.MS_PER_TICK);
+                }
+            }
         }
     }
 }

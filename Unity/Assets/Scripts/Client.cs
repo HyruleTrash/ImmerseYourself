@@ -61,6 +61,20 @@ public class Client : SingletonBehaviour<Client>
             stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
         }
 
+        public void SendData(Packet packet)
+        {
+            try
+            {
+                if (socket == null)
+                    return;
+                stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
+            }
+            catch (Exception e)
+            {
+                Debug.Log($"Error sending data to server via TCP: {e}");
+            }
+        }
+
         private void ReceiveCallback(IAsyncResult ar)
         {
             try

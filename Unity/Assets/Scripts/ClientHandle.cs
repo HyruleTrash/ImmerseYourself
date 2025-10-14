@@ -9,9 +9,7 @@ public class ClientHandle : MonoBehaviour
         int id = packet.ReadInt();
         
         Debug.Log($"Message from server: {message}");
-
         Client.instance.id = id;
-        
-        // TODO send message received
+        ClientSend.WelcomeReceived();
     }
 }

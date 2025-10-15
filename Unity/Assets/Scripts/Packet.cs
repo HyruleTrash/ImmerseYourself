@@ -7,7 +7,8 @@ namespace ImmerseYourselfServer
     /// <summary>Sent from server to client.</summary>
     public enum ServerPackets
     {
-        Welcome = 1
+        Welcome = 1,
+        ServerFull = 2
     }
 
     /// <summary>Sent from client to server.</summary>

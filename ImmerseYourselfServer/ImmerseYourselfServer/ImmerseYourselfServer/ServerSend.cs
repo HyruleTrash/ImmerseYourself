@@ -27,6 +27,13 @@
                 
             SendTCPData(clientId, packet);
         }
+        
+        public static void ServerFull(Client.TCP tcpClient)
+        {
+            using var packet = new Packet((int)ServerPackets.ServerFull);
+            packet.WriteLength();
+            tcpClient.SendData(packet);
+        }
     }
 }
 

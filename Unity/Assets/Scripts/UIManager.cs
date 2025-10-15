@@ -1,15 +1,30 @@
+using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : SingletonBehaviour<UIManager>
 {
-    public GameObject startMenu;
-    public TMP_InputField usernameField;
-
-    public void ConnectToServer()
+    [SerializeField]
+    private Image loadingUI;
+    [SerializeField]
+    private Image inGameUI;
+    
+    private void Start()
     {
-        startMenu.SetActive(false);
-        usernameField.interactable = true;
-        Client.instance.ConnectToServer();
+        inGameUI.enabled = false;
+        loadingUI.enabled = true;
+    }
+
+    public void EnableGameUI()
+    {
+        loadingUI.enabled = false;
+        inGameUI.enabled = true;
+    }
+    
+    public void DisableGameUI()
+    {
+        loadingUI.enabled = true;
+        inGameUI.enabled = false;
     }
 }

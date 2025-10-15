@@ -20,6 +20,7 @@ public class Client : SingletonBehaviour<Client>
     private void Start()
     {
         tcp = new TCP();
+        ConnectToServer();
     }
 
     private void OnApplicationQuit()
@@ -159,18 +160,21 @@ public class Client : SingletonBehaviour<Client>
     {
         packetHandlers = new Dictionary<int, PacketHandler>()
         {
-            {(int)ServerPackets.Welcome, ClientHandle.Welcome}
+            {(int)ServerPackets.Welcome, ClientHandle.Welcome},
+            {(int)ServerPackets.ServerFull, ClientHandle.ServerFull}
         };
 
         Debug.Log("Packet handlers have been registered.");
     }
 
-    private void Disconnect()
+    public void Disconnect()
     {
         if (!isConnected)
             return;
         isConnected = false;
         tcp.socket.Close();
+
+        UIManager.instance.DisableGameUI();
 
         Debug.Log("Disconnected from server.");
     }

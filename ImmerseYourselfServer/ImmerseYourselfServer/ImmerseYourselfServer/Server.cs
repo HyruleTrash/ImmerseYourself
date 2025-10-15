@@ -33,14 +33,21 @@ public class Server
         TcpListener.BeginAcceptTcpClient(new AsyncCallback(TCPConnectCallback), null);
         Console.WriteLine($"Incoming connection from {_client.Client.RemoteEndPoint}...");
 
+        bool found = false;
         foreach (var (key, client) in clients)
         {
             if (client.tcp.socket != null) continue;
             client.tcp.Connect(_client);
+            found = true;
             return;
         }
-        
+        if (found)
+            return;
         Console.WriteLine($"Server is at full capacity");
+        
+        Client tempClient = new Client(-1);
+        tempClient.tcp.Connect(_client);
+        ServerSend.ServerFull(tempClient.tcp);
     }
 
     private static void InitializeServerData()
@@ -53,7 +60,7 @@ public class Server
         
         packetHandlers = new Dictionary<int, PacketHandler>()
         {
-            {(int)ClientPackets.WelcomeReceived, ServerHandle.WelcomeRecieved}
+            {(int)ClientPackets.WelcomeReceived, ServerHandle.WelcomeReceived},
         };
         Console.WriteLine("Packet handlers have been registered.");
     }

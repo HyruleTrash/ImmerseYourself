@@ -2,14 +2,14 @@
 {
     public class ServerHandle
     {
-        public static void WelcomeRecieved(int fromClient, Packet packet)
+        public static void WelcomeReceived(int fromClient, Packet packet)
         {
             int clientIdCheck = packet.ReadInt();
-            string username = packet.ReadString();
+            var temp = Server.clients[fromClient].tcp.socket.Client.RemoteEndPoint;
         
-            Console.WriteLine($"{Server.clients[fromClient].tcp.socket.Client.RemoteEndPoint}: connected successfully! player name: {username}");
+            Console.WriteLine($"{temp}: connected successfully!");
             if (clientIdCheck != fromClient)
-                Console.WriteLine($"{username} has assumed the wrong client ID. Player ID: {clientIdCheck}");
+                Console.WriteLine($"{temp} has assumed the wrong client ID. monitor ID: {clientIdCheck}");
             
             // TODO: enter game
         }

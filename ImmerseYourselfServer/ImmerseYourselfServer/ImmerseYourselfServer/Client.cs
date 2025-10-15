@@ -41,7 +41,8 @@ public class Client
             
             stream.BeginRead(receiveBuffer,0, dataBufferSize, ReceiveCallback, null);
             
-            ServerSend.Welcome(id, "You have joined the server!");
+            if (id != -1)
+                ServerSend.Welcome(id, "You have joined the server!");
         }
 
         public void SendData(Packet packet)
@@ -109,7 +110,8 @@ public class Client
                 int byteLength = stream.EndRead(ar);
                 if (byteLength <= 0)
                 {
-                    Server.clients[id].Disconnect();
+                    if (id != -1)
+                        Server.clients[id].Disconnect();
                     return;
                 }
                 
@@ -122,7 +124,8 @@ public class Client
             catch (Exception e)
             {
                 Console.WriteLine($"Error receiving TCP data: {e}");
-                Server.clients[id].Disconnect();
+                if (id != -1)
+                    Server.clients[id].Disconnect();
                 throw;
             }
         }

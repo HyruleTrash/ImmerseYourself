@@ -13,6 +13,7 @@ public class Client : SingletonBehaviour<Client>
     public int id;
     public TCP tcp;
     
+	private bool isConnected = false;
     private delegate void PacketHandler(Packet packet);
     private static Dictionary<int, PacketHandler> packetHandlers;
 
@@ -21,9 +22,17 @@ public class Client : SingletonBehaviour<Client>
         tcp = new TCP();
     }
 
+    private void OnApplicationQuit()
+    {
+        Disconnect();
+    }
+
     public void ConnectToServer()
     {
         InitializeClientData();
+        
+        isConnected = true;
+        
         tcp.Connect();
     }
     
@@ -82,8 +91,7 @@ public class Client : SingletonBehaviour<Client>
                 int byteLength = stream.EndRead(ar);
                 if (byteLength <= 0)
                 {
-                    // TODO: disconnect
-                    // stream.Close();
+                    instance.Disconnect();
                     return;
                 }
                 
@@ -96,7 +104,7 @@ public class Client : SingletonBehaviour<Client>
             catch (Exception e)
             {
                 Console.WriteLine($"Error receiving TCP data: {e}");
-                // TODO: disconnect
+                Disconnect();
                 throw;
             }
         }
@@ -135,6 +143,16 @@ public class Client : SingletonBehaviour<Client>
             
             return packetLength <= 1;
         }
+
+        private void Disconnect()
+        {
+            instance.Disconnect();
+            
+            stream = null;
+            receivedData = null;
+            receiveBuffer = null;
+            socket = null;
+        }
     }
 
     private void InitializeClientData()
@@ -145,5 +163,15 @@ public class Client : SingletonBehaviour<Client>
         };
 
         Debug.Log("Packet handlers have been registered.");
+    }
+
+    private void Disconnect()
+    {
+        if (!isConnected)
+            return;
+        isConnected = false;
+        tcp.socket.Close();
+
+        Debug.Log("Disconnected from server.");
     }
 }

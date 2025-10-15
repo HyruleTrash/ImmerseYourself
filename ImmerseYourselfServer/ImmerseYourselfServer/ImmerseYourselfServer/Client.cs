@@ -93,6 +93,15 @@ public class Client
             return packetLength <= 1;
         }
 
+        public void Disconnect()
+        {
+            socket.Close();
+            stream = null;
+            receivedData = null;
+            receiveBuffer = null;
+            socket = null;
+        }
+
         private void ReceiveCallback(IAsyncResult ar)
         {
             try
@@ -100,8 +109,7 @@ public class Client
                 int byteLength = stream.EndRead(ar);
                 if (byteLength <= 0)
                 {
-                    // TODO: disconnect
-                    // stream.Close();
+                    Server.clients[id].Disconnect();
                     return;
                 }
                 
@@ -114,9 +122,18 @@ public class Client
             catch (Exception e)
             {
                 Console.WriteLine($"Error receiving TCP data: {e}");
-                // TODO: disconnect
+                Server.clients[id].Disconnect();
                 throw;
             }
         }
+    }
+
+    private void Disconnect()
+    {
+        Console.WriteLine($"Client {tcp.socket.Client.RemoteEndPoint} has been disconnected");
+        
+        // TODO: set player data to null
+        
+        tcp.Disconnect();
     }
 }

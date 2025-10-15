@@ -163,7 +163,8 @@ public class Client : SingletonBehaviour<Client>
         packetHandlers = new Dictionary<int, PacketHandler>()
         {
             {(int)ServerPackets.Welcome, ClientHandle.Welcome},
-            {(int)ServerPackets.ServerFull, ClientHandle.ServerFull}
+            {(int)ServerPackets.ServerFull, ClientHandle.ServerFull},
+            {(int)ServerPackets.StartMiniGame, ClientHandle.StartMiniGame}
         };
 
         Debug.Log("Packet handlers have been registered.");

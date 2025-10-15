@@ -24,4 +24,12 @@ public class ClientHandle : MonoBehaviour
         Debug.Log("Server Full notice received");
         Client.instance.Disconnect();
     }
+    
+    public static void StartMiniGame(Packet packet)
+    {
+        var miniGameId = (MiniGames)packet.ReadInt();
+        Debug.Log($"Mini game requested, starting MiniGame {miniGameId}");
+        
+        // TODO: actually start the mini game
+    }
 }

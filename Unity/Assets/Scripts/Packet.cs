@@ -4,19 +4,6 @@ using System.Collections.Generic;
 
 namespace ImmerseYourselfServer
 {
-    /// <summary>Sent from server to client.</summary>
-    public enum ServerPackets
-    {
-        Welcome = 1,
-        ServerFull = 2
-    }
-
-    /// <summary>Sent from client to server.</summary>
-    public enum ClientPackets
-    {
-        WelcomeReceived = 1
-    }
-
     public class Packet : IDisposable
     {
         private List<byte> buffer;

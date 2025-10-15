@@ -64,4 +64,36 @@ public class Server
         };
         Console.WriteLine("Packet handlers have been registered.");
     }
+
+    private static bool IsServerFull()
+    {
+        bool full = true;
+        foreach (var (key, client) in clients)
+        {
+            if (client.tcp.socket != null) continue;
+            full = false;
+        }
+        return full;
+    }
+
+    private static int lastPickedId = -1;
+    private static bool isPlaying = false;
+    public static void StartGame()
+    {
+        var isServerFull = IsServerFull();
+        Console.WriteLine($"Server full status: {isServerFull}");
+        if (!isServerFull || isPlaying)
+            return;
+        Console.WriteLine("Starting game...");
+        var pickedEntry = clients.GetRandomEntry();
+
+        while (pickedEntry.HasValue == false || lastPickedId == pickedEntry.Value.Key)
+        {
+            pickedEntry = clients.GetRandomEntry();
+            if (pickedEntry.HasValue && lastPickedId != pickedEntry.Value.Key)
+                break;
+        }
+        ServerSend.StartMiniGame(pickedEntry.Value.Key);
+        isPlaying = true;
+    }
 }

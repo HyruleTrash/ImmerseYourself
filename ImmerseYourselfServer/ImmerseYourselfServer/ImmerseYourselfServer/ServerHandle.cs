@@ -10,8 +10,8 @@
             Console.WriteLine($"{temp}: connected successfully!");
             if (clientIdCheck != fromClient)
                 Console.WriteLine($"{temp} has assumed the wrong client ID. monitor ID: {clientIdCheck}");
-            
-            // TODO: enter game
+
+            Server.StartGame();
         }
     }
 }

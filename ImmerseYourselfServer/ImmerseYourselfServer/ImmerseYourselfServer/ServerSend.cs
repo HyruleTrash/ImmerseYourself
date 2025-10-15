@@ -34,6 +34,22 @@
             packet.WriteLength();
             tcpClient.SendData(packet);
         }
+
+        public static void StartMiniGame(int clientId)
+        {
+            Console.WriteLine($"Starting MiniGame at monitor {clientId}");
+            using var packet = new Packet((int)ServerPackets.StartMiniGame);
+            
+            packet.Write((int)GetRandomEnumValue<MiniGames>());
+            
+            SendTCPData(clientId, packet);
+        }
+        
+        public static T GetRandomEnumValue<T>() where T : Enum
+        {
+            var values = (T[])Enum.GetValues(typeof(T));
+            return values[Random.Shared.Next(values.Length)];
+        }
     }
 }
 

@@ -16,10 +16,12 @@ public class Client : SingletonBehaviour<Client>
 	private bool isConnected = false;
     private delegate void PacketHandler(Packet packet);
     private static Dictionary<int, PacketHandler> packetHandlers;
+    private DisplayChanger displayChanger;
 
     private void Start()
     {
         tcp = new TCP();
+        displayChanger = gameObject.AddComponent<DisplayChanger>();
         ConnectToServer();
     }
 
@@ -177,5 +179,13 @@ public class Client : SingletonBehaviour<Client>
         UIManager.instance.DisableGameUI();
 
         Debug.Log("Disconnected from server.");
+    }
+    
+    /// <summary>
+    /// Moves the window to a specific monitor and optionally maximizes it
+    /// </summary>
+    public void MoveWindowToMonitor(int monitorIndex)
+    {
+        displayChanger.MoveToMonitor(monitorIndex);
     }
 }

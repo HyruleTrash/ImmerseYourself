@@ -19,6 +19,15 @@ class ClientSend : MonoBehaviour
         
         SendTCPData(packet);
     }
+    
+    public static void MiniGameOver(MiniGames gameId)
+    {
+        using var packet = new Packet((int)ClientPackets.MiniGameOver);
+        packet.Write(Client.instance.id);
+        packet.Write((int)gameId);
+        
+        SendTCPData(packet);
+    }
 
     #endregion
 }

@@ -77,8 +77,8 @@ public class Server
     }
 
     private static int lastPickedId = -1;
-    private static bool isPlaying = false;
-    public static void StartGame()
+    public static bool isPlaying = false;
+    public static void StartGame(MiniGames lastPlayedMiniGame = 0)
     {
         var isServerFull = IsServerFull();
         Console.WriteLine($"Server full status: {isServerFull}");
@@ -93,7 +93,7 @@ public class Server
             if (pickedEntry.HasValue && lastPickedId != pickedEntry.Value.Key)
                 break;
         }
-        ServerSend.StartMiniGame(pickedEntry.Value.Key);
+        ServerSend.StartMiniGame(pickedEntry.Value.Key, lastPlayedMiniGame);
         isPlaying = true;
     }
 }

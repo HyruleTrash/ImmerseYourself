@@ -35,12 +35,19 @@
             tcpClient.SendData(packet);
         }
 
-        public static void StartMiniGame(int clientId)
+        public static void StartMiniGame(int clientId, MiniGames lastPlayedMiniGame = 0)
         {
             Console.WriteLine($"Starting MiniGame at monitor {clientId}");
             using var packet = new Packet((int)ServerPackets.StartMiniGame);
-            
-            packet.Write((int)GetRandomEnumValue<MiniGames>());
+
+            MiniGames foundGame = GetRandomEnumValue<MiniGames>();
+            while (foundGame == lastPlayedMiniGame)
+            {
+                foundGame = GetRandomEnumValue<MiniGames>();
+                if (foundGame != lastPlayedMiniGame)
+                    break;
+            }
+            packet.Write((int)foundGame);
             
             SendTCPData(clientId, packet);
         }

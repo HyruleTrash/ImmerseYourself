@@ -12,15 +12,18 @@ public class Client : SingletonBehaviour<Client>
     public int port = 4377;
     public int id;
     public TCP tcp;
+    public MiniGameHolder miniGameHolder;
     
 	private bool isConnected = false;
     private delegate void PacketHandler(Packet packet);
     private static Dictionary<int, PacketHandler> packetHandlers;
     private DisplayChanger displayChanger;
+    
 
     private void Start()
     {
         tcp = new TCP();
+        miniGameHolder = gameObject.GetComponent<MiniGameHolder>();
         displayChanger = gameObject.AddComponent<DisplayChanger>();
         ConnectToServer();
     }

@@ -29,7 +29,17 @@ public class ClientHandle : MonoBehaviour
     {
         var miniGameId = (MiniGames)packet.ReadInt();
         Debug.Log($"Mini game requested, starting MiniGame {miniGameId}");
-        
-        // TODO: actually start the mini game
+
+        bool found = false;
+        foreach (var miniGameComponent in Client.instance.miniGameHolder.miniGames)
+        {
+            if (miniGameComponent.gameId != miniGameId)
+                continue;
+            miniGameComponent.StartMiniGame();
+            found = true;
+            break;
+        }
+        if (!found)
+            ClientSend.MiniGameOver(miniGameId);
     }
 }

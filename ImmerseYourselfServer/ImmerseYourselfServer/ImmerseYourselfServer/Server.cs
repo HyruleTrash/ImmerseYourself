@@ -61,6 +61,7 @@ public class Server
         packetHandlers = new Dictionary<int, PacketHandler>()
         {
             {(int)ClientPackets.WelcomeReceived, ServerHandle.WelcomeReceived},
+            {(int)ClientPackets.MiniGameOver, ServerHandle.MiniGameOver}
         };
         Console.WriteLine("Packet handlers have been registered.");
     }
@@ -93,6 +94,8 @@ public class Server
             if (pickedEntry.HasValue && lastPickedId != pickedEntry.Value.Key)
                 break;
         }
+
+        lastPickedId = pickedEntry.Value.Key;
         ServerSend.StartMiniGame(pickedEntry.Value.Key, lastPlayedMiniGame);
         isPlaying = true;
     }

@@ -53,7 +53,8 @@ namespace ImmerseYourselfServer
             
             Console.WriteLine($"Number of monitors: {count}");
             
-            Server.Start(count);
+            // Server.Start(count); TODO: remove temp monitor detect
+            Server.Start(2);
             isRunning = true;
 
             Thread mainThread = new Thread(new ThreadStart(MainThread));

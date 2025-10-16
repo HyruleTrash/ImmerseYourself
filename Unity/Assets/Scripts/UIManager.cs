@@ -6,25 +6,25 @@ using UnityEngine.UI;
 public class UIManager : SingletonBehaviour<UIManager>
 {
     [SerializeField]
-    private Image loadingUI;
+    private GameObject loadingUI;
     [SerializeField]
-    private Image inGameUI;
+    private GameObject inGameUI;
     
     private void Start()
     {
-        inGameUI.enabled = false;
-        loadingUI.enabled = true;
+        inGameUI.SetActive(false);
+        loadingUI.SetActive(true);
     }
 
     public void EnableGameUI()
     {
-        loadingUI.enabled = false;
-        inGameUI.enabled = true;
+        inGameUI.SetActive(true);
+        loadingUI.SetActive(false);
     }
     
     public void DisableGameUI()
     {
-        loadingUI.enabled = true;
-        inGameUI.enabled = false;
+        inGameUI.SetActive(false);
+        loadingUI.SetActive(true);
     }
 }

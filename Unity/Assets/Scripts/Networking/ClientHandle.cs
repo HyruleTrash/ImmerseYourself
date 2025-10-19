@@ -1,5 +1,6 @@
 ﻿using ImmerseYourselfServer;
 using UnityEngine;
+using UnityRawInput;
 
 public class ClientHandle : MonoBehaviour
 {
@@ -15,6 +16,10 @@ public class ClientHandle : MonoBehaviour
         #if !UNITY_EDITOR
         Client.instance.MoveWindowToMonitor(id);
         #endif
+        
+        RawInput.Start();
+        RawInput.WorkInBackground = true;
+        RawInput.InterceptMessages = false;
         
         ClientSend.WelcomeReceived();
     }

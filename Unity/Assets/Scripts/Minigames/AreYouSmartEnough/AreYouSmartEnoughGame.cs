@@ -4,15 +4,19 @@ using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityRawInput;
 using Random = UnityEngine.Random;
 
 public class AreYouSmartEnoughGame : MiniGame
 {
+    [FormerlySerializedAs("keyToStringListener")] [SerializeField]
+    private CalculatorInterprator calculatorInterprator;
+    
     [SerializeField]
     private GameObject controls;
     private bool controlsExplained = false;
     
-    [FormerlySerializedAs("Timer")] [SerializeField]
+    [SerializeField]
     private Timer timer;
     
     [SerializeField]
@@ -41,10 +45,12 @@ public class AreYouSmartEnoughGame : MiniGame
         gameId = MiniGames.AreYouSmartEnough;
         timer.onTimerEnd.AddListener(OnTimerTimeOut);
         controls.SetActive(false);
+        calculatorInterprator = GetComponent<CalculatorInterprator>();
     }
 
     public override void StartMiniGame()
     {
+        base.StartMiniGame();
         Debug.Log("Are you smart enough has been started..");
         
         // check state of had questions
@@ -62,6 +68,7 @@ public class AreYouSmartEnoughGame : MiniGame
         }
         else
         {
+            timer.gameObject.SetActive(true);
             TriggerQuestionPrompt();
         }
     }
@@ -106,20 +113,26 @@ public class AreYouSmartEnoughGame : MiniGame
 
     private void Update()
     {
-        if (Input.inputString == "")
+        if (!isGameRunning)
+            return;
+        
+        if (answerText.text != "" && RawInput.IsKeyDown(RawKey.Return))
+        {
+            CheckAnswer();
+            return;
+        }
+        
+        if (calculatorInterprator.inputString == "")
             return;
 
         string[] numbers = {
             "0","1","2","3","4","5","6","7","8","9"
         };
-        if (numbers.Contains(Input.inputString))
+        if (numbers.Contains(calculatorInterprator.inputString))
         {
-            currentAnswer += Input.inputString;
+            currentAnswer += calculatorInterprator.inputString;
             answerText.text = currentAnswer;
         }
-        
-        if (!Input.GetKeyDown(KeyCode.KeypadEnter)) return;
-        CheckAnswer();
     }
 
     public void CheckAnswer()

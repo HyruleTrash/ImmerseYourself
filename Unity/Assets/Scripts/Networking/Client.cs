@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Net.Sockets;
 using ImmerseYourselfServer;
 using NUnit.Framework;
+using UnityRawInput;
 
 public class Client : SingletonBehaviour<Client>
 {
@@ -181,6 +182,7 @@ public class Client : SingletonBehaviour<Client>
         tcp.socket.Close();
 
         UIManager.instance.DisableGameUI();
+        RawInput.Stop();
 
         Debug.Log("Disconnected from server.");
     }

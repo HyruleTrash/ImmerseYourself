@@ -28,6 +28,15 @@ public enum ClientPackets
     MiniGameOver = 2
 }
 
+public static class EnumExtensions
+{
+    public static T GetRandomEnumValue<T>() where T : Enum
+    {
+        var values = (T[])Enum.GetValues(typeof(T));
+        return values[Random.Shared.Next(values.Length)];
+    }
+}
+
 public static class DictionaryExtensions
 {
     private static readonly Random _random = new Random();

@@ -112,7 +112,6 @@ public class Client : SingletonBehaviour<Client>
             {
                 Console.WriteLine($"Error receiving TCP data: {e}");
                 Disconnect();
-                throw;
             }
         }
 

@@ -33,6 +33,7 @@ public class ClientHandle : MonoBehaviour
     public static void StartMiniGame(Packet packet)
     {
         var miniGameId = (MiniGames)packet.ReadInt();
+        var shouldShowControls = packet.ReadBool();
         Debug.Log($"Mini game requested, starting MiniGame {miniGameId}");
 
         bool found = false;
@@ -40,7 +41,7 @@ public class ClientHandle : MonoBehaviour
         {
             if (miniGameComponent.gameId != miniGameId)
                 continue;
-            miniGameComponent.StartMiniGame();
+            miniGameComponent.StartMiniGame(shouldShowControls);
             found = true;
             break;
         }

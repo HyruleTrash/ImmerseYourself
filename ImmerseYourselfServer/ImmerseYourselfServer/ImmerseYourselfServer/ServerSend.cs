@@ -35,27 +35,15 @@
             tcpClient.SendData(packet);
         }
 
-        public static void StartMiniGame(int clientId, MiniGames lastPlayedMiniGame = 0)
+        public static void StartMiniGame(int clientId, MiniGames foundGame, bool shouldShowControls)
         {
             Console.WriteLine($"Starting MiniGame at monitor {clientId}");
             using var packet = new Packet((int)ServerPackets.StartMiniGame);
-
-            MiniGames foundGame = GetRandomEnumValue<MiniGames>();
-            while (foundGame == lastPlayedMiniGame)
-            {
-                foundGame = GetRandomEnumValue<MiniGames>();
-                if (foundGame != lastPlayedMiniGame)
-                    break;
-            }
+            
             packet.Write((int)foundGame);
+            packet.Write(shouldShowControls);
             
             SendTCPData(clientId, packet);
-        }
-        
-        public static T GetRandomEnumValue<T>() where T : Enum
-        {
-            var values = (T[])Enum.GetValues(typeof(T));
-            return values[Random.Shared.Next(values.Length)];
         }
     }
 }

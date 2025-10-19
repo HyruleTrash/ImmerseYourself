@@ -18,19 +18,27 @@ public class CalculatorInterprator : MonoBehaviour
         RawKey.Numpad8,
         RawKey.Numpad9
     };
+    
+    private List<RawKey> hadKeys = new();
 
     [HideInInspector]
     public string inputString;
-    
-    private void Update()
+
+    private void Start()
+    {
+        RawInput.OnKeyDown += UpdateInputString;
+    }
+
+    private void UpdateInputString(RawKey key)
+    {
+        if (!enabled || hadKeys.Contains(key) || !includeKeys.Contains(key)) return;
+        hadKeys.Add(key);
+        inputString += key.ToString().Replace("Numpad", "");
+    }
+
+    public void ClearInputString()
     {
         inputString = "";
-        var hadKeys = new List<RawKey>();
-        foreach (var key in RawInput.PressedKeys)
-        {
-            if (!includeKeys.Contains(key) || hadKeys.Contains(key)) continue;
-            hadKeys.Add(key);
-            inputString += key.ToString().Replace("Numpad", "");
-        }
+        hadKeys.Clear();
     }
 }

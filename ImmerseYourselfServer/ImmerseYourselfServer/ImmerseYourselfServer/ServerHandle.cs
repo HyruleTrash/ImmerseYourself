@@ -25,7 +25,7 @@
             if (clientIdCheck != fromClient)
                 Console.WriteLine($"{temp} has assumed the wrong client ID. monitor ID: {clientIdCheck}");
             
-            Server.isPlaying = false;
+            Server.gameData.isPlaying = false;
             Server.StartGame(finishedGame);
         }
     }

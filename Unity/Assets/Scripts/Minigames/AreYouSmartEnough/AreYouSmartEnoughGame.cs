@@ -14,7 +14,6 @@ public class AreYouSmartEnoughGame : MiniGame
     
     [SerializeField]
     private GameObject controls;
-    private bool controlsExplained = false;
     
     [SerializeField]
     private Timer timer;
@@ -44,14 +43,14 @@ public class AreYouSmartEnoughGame : MiniGame
     {
         gameId = MiniGames.AreYouSmartEnough;
         timer.onTimerEnd.AddListener(OnTimerTimeOut);
-        controls.SetActive(false);
         calculatorInterprator = GetComponent<CalculatorInterprator>();
+        HideAll();
     }
 
-    public override void StartMiniGame()
+    public override void StartMiniGame(bool shouldShowControls)
     {
-        base.StartMiniGame();
-        Debug.Log("Are you smart enough has been started..");
+        base.StartMiniGame(shouldShowControls);
+        Debug.Log($"Are you smart enough has been started.. showing controls: {shouldShowControls}");
         
         // check state of had questions
         if (hadQuestions.Count >= questions.Count)
@@ -61,42 +60,60 @@ public class AreYouSmartEnoughGame : MiniGame
         hadQuestionsCount = 0;
         
         // prompt that explains controls
-        if (!controlsExplained)
+        if (shouldShowControls)
         {
             controls.SetActive(true);
-            controlsExplained = true;
         }
         else
         {
-            timer.gameObject.SetActive(true);
             TriggerQuestionPrompt();
         }
     }
 
     public override void MiniGameFinished()
     {
+        HideAll();
+        ResetAnswer();
+        base.MiniGameFinished();
+    }
+
+    private void HideAll()
+    {
+        calculatorInterprator.enabled = false;
         timer.gameObject.SetActive(false);
         controls.SetActive(false);
-        base.MiniGameFinished();
+        questionText.gameObject.SetActive(false);
+        answerText.gameObject.SetActive(false);
     }
 
     public void TriggerQuestionPrompt()
     {
+        timer.gameObject.SetActive(true);
+        calculatorInterprator.enabled = true;
+        
         // on enter start timer, and prompt math question
         timer.Reset();
         timer.StartTimer();
         
         // retrieve question
+        int tries = 0;
+        int maxTries = questions.Count;
         currentQuestion = questions[Random.Range(0, questions.Count)];
         while (hadQuestions.Contains(currentQuestion))
         {
             currentQuestion = questions[Random.Range(0, questions.Count)];
+            tries++;
             if (!hadQuestions.Contains(currentQuestion))
                 break;
+            if (tries > maxTries)
+            {
+                hadQuestions.Clear();
+                currentQuestion = questions[0];
+            }
         }
         
         // set question
-        questionText.text = currentQuestion.question;
+        questionText.text = currentQuestion.question + " =";
         
         // set question visibility
         questionText.gameObject.SetActive(true);
@@ -124,15 +141,10 @@ public class AreYouSmartEnoughGame : MiniGame
         
         if (calculatorInterprator.inputString == "")
             return;
-
-        string[] numbers = {
-            "0","1","2","3","4","5","6","7","8","9"
-        };
-        if (numbers.Contains(calculatorInterprator.inputString))
-        {
-            currentAnswer += calculatorInterprator.inputString;
-            answerText.text = currentAnswer;
-        }
+        
+        currentAnswer = calculatorInterprator.inputString;
+        answerText.text = currentAnswer;
+        
     }
 
     public void CheckAnswer()
@@ -152,8 +164,7 @@ public class AreYouSmartEnoughGame : MiniGame
         }
         
         // reset current input
-        currentAnswer = "";
-        answerText.text = "";
+        ResetAnswer();
 
         // check if round is over
         if (hadQuestionsCount >= maxQuestionsPerRound)
@@ -165,5 +176,12 @@ public class AreYouSmartEnoughGame : MiniGame
         
         // trigger next question
         TriggerQuestionPrompt();
+    }
+
+    private void ResetAnswer()
+    {
+        currentAnswer = "";
+        answerText.text = "";
+        calculatorInterprator.ClearInputString();
     }
 }

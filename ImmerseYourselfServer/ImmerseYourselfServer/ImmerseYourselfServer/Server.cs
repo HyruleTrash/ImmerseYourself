@@ -11,6 +11,7 @@ public class Server
     public static Dictionary<int, Client> clients = new Dictionary<int, Client>();
     public delegate void PacketHandler(int fromClient, Packet packet);
     public static Dictionary<int, PacketHandler> packetHandlers;
+    public static GameData gameData = new();
 
     public static void Start(int maxClients)
     {
@@ -76,27 +77,36 @@ public class Server
         }
         return full;
     }
-
-    private static int lastPickedId = -1;
-    public static bool isPlaying = false;
+    
     public static void StartGame(MiniGames lastPlayedMiniGame = 0)
     {
         var isServerFull = IsServerFull();
         Console.WriteLine($"Server full status: {isServerFull}");
-        if (!isServerFull || isPlaying)
+        if (!isServerFull || gameData.isPlaying)
             return;
         Console.WriteLine("Starting game...");
-        var pickedEntry = clients.GetRandomEntry();
-
-        while (pickedEntry.HasValue == false || lastPickedId == pickedEntry.Value.Key)
+        
+        // pick minigame
+        var foundGame = EnumExtensions.GetRandomEnumValue<MiniGames>();
+        while (foundGame == lastPlayedMiniGame)
         {
-            pickedEntry = clients.GetRandomEntry();
-            if (pickedEntry.HasValue && lastPickedId != pickedEntry.Value.Key)
+            foundGame = EnumExtensions.GetRandomEnumValue<MiniGames>();
+            if (foundGame != lastPlayedMiniGame)
                 break;
         }
-
-        lastPickedId = pickedEntry.Value.Key;
-        ServerSend.StartMiniGame(pickedEntry.Value.Key, lastPlayedMiniGame);
-        isPlaying = true;
+        
+        // pick monitor
+        var pickedEntry = clients.GetRandomEntry();
+        while (pickedEntry.HasValue == false || gameData.GetLastPickedClientForMiniGame(foundGame) == pickedEntry.Value.Key)
+        {
+            pickedEntry = clients.GetRandomEntry();
+            if (pickedEntry.HasValue && gameData.GetLastPickedClientForMiniGame(foundGame) != pickedEntry.Value.Key)
+                break;
+        }
+        
+        ServerSend.StartMiniGame(pickedEntry.Value.Key, foundGame, !gameData.PlayedMiniGamesContains(foundGame));
+        gameData.AddMiniGameToPlayedMiniGames(foundGame, pickedEntry.Value.Key);
+        
+        gameData.isPlaying = true;
     }
 }

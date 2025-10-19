@@ -134,8 +134,8 @@ public class Client
     private void Disconnect()
     {
         Console.WriteLine($"Client {tcp.socket.Client.RemoteEndPoint} has been disconnected");
-        
-        // TODO: set player data to null
+
+        Server.gameData = new();
         
         tcp.Disconnect();
     }

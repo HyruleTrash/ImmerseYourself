@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
 
@@ -59,6 +60,39 @@ namespace ImmerseYourselfServer
 
             Thread mainThread = new Thread(new ThreadStart(MainThread));
             mainThread.Start();
+            
+            // try // TODO: uncomment when testing release
+            // {
+            //     string path = AppDomain.CurrentDomain.BaseDirectory;
+            //     int levelsUp = 7; // how many directories to go up
+            //
+            //     for (int i = 0; i < levelsUp; i++)
+            //     {
+            //         path = Directory.GetParent(path)!.FullName;
+            //     }
+            //
+            //     string exePath = Path.Combine(path, "Unity/.Builds/ImmerseYourself.exe");
+            //     
+            //     ProcessStartInfo psi = new ProcessStartInfo()
+            //     {
+            //         FileName = exePath,                     // change to your exe path
+            //         Verb = "runas",                         // request admin privileges
+            //         UseShellExecute = true                  // must be true for Verb to work
+            //     };
+            //
+            //     for (int i = 0; i < count; i++)
+            //     {
+            //         Process.Start(psi);
+            //     }
+            // }
+            // catch (System.ComponentModel.Win32Exception ex)
+            // {
+            //     Console.WriteLine("The user refused the elevation: " + ex.Message);
+            // }
+            // catch (Exception ex)
+            // {
+            //     Console.WriteLine("Error launching process: " + ex.Message);
+            // }
         }
 
         private static void MainThread()

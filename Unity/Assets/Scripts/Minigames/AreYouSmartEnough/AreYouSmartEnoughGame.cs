@@ -23,14 +23,13 @@ public class AreYouSmartEnoughGame : MiniGame
     [SerializeField]
     private TextMeshProUGUI answerText;
     
-    [Serializable]
-    public class Question
-    {
-        public string question;
-        public string answer;
-    }
     [SerializeField]
-    private List<Question> questions = new();
+    private ImageFadeOut wrongAnswerVisual;
+    [SerializeField]
+    private ImageFadeOut correctAnswerVisual;
+    
+    [SerializeField]
+    private QuestionList questionList;
     private List<Question> hadQuestions = new();
     private Question currentQuestion;
     private string currentAnswer; // user input
@@ -53,7 +52,7 @@ public class AreYouSmartEnoughGame : MiniGame
         Debug.Log($"Are you smart enough has been started.. showing controls: {shouldShowControls}");
         
         // check state of had questions
-        if (hadQuestions.Count >= questions.Count)
+        if (hadQuestions.Count >= questionList.questions.Count)
             hadQuestions.Clear();
         
         // Reset minigame data
@@ -96,21 +95,7 @@ public class AreYouSmartEnoughGame : MiniGame
         timer.StartTimer();
         
         // retrieve question
-        int tries = 0;
-        int maxTries = questions.Count;
-        currentQuestion = questions[Random.Range(0, questions.Count)];
-        while (hadQuestions.Contains(currentQuestion))
-        {
-            currentQuestion = questions[Random.Range(0, questions.Count)];
-            tries++;
-            if (!hadQuestions.Contains(currentQuestion))
-                break;
-            if (tries > maxTries)
-            {
-                hadQuestions.Clear();
-                currentQuestion = questions[0];
-            }
-        }
+        currentQuestion = questionList.GetRandomQuestion(hadQuestions);
         
         // set question
         questionText.text = currentQuestion.question + " =";
@@ -122,7 +107,9 @@ public class AreYouSmartEnoughGame : MiniGame
     
     public void OnTimerTimeOut()
     {
-        // TODO: Answer wrong trigger here
+        wrongAnswerVisual.Appear();
+        wrongAnswerVisual.TriggerFadeOut();
+        
         Debug.Log("Timeout!");
 
         CheckAnswer();
@@ -144,7 +131,6 @@ public class AreYouSmartEnoughGame : MiniGame
         
         currentAnswer = calculatorInterprator.inputString;
         answerText.text = currentAnswer;
-        
     }
 
     public void CheckAnswer()
@@ -159,8 +145,13 @@ public class AreYouSmartEnoughGame : MiniGame
         // check answer
         if (currentQuestion.answer == currentAnswer)
         {
-            // TODO: do something
-            Debug.Log("RightAnswer");
+            correctAnswerVisual.Appear();
+            correctAnswerVisual.TriggerFadeOut();
+        }
+        else
+        {
+            wrongAnswerVisual.Appear();
+            wrongAnswerVisual.TriggerFadeOut();
         }
         
         // reset current input

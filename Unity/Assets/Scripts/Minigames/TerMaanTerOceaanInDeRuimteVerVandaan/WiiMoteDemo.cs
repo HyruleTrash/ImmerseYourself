@@ -49,6 +49,7 @@ public class WiiMoteDemo : MonoBehaviour
             
             var motionControls = GetAccelVector();
             Debug.Log($"motion controls: {motionControls.x}, {motionControls.y}, {motionControls.z}");
+            transform.rotation = Quaternion.Euler(-motionControls.z * 90, 0, -motionControls.x * 90);
             
             lastUpdate = Time.time;
         }

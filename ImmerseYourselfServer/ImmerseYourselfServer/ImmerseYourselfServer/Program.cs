@@ -28,6 +28,7 @@ namespace ImmerseYourselfServer
         }
         
         private static bool isRunning = false;
+        private static DiscordBotManager discordBotManager;
         
         static void Main(string[] args)
         {
@@ -93,6 +94,8 @@ namespace ImmerseYourselfServer
             // {
             //     Console.WriteLine("Error launching process: " + ex.Message);
             // }
+
+            discordBotManager = new DiscordBotManager();
         }
 
         private static void MainThread()

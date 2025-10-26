@@ -13,9 +13,9 @@ public class ClientHandle : MonoBehaviour
         UIManager.instance.EnableGameUI();
         
         Client.instance.id = id;
-        #if !UNITY_EDITOR
-        Client.instance.MoveWindowToMonitor(id);
-        #endif
+        // #if !UNITY_EDITOR
+        // Client.instance.MoveWindowToMonitor(id);
+        // #endif
         
         RawInput.Start();
         RawInput.WorkInBackground = true;

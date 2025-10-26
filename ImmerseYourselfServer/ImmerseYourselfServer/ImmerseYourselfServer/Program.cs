@@ -27,8 +27,7 @@ namespace ImmerseYourselfServer
             public string DeviceKey;
         }
         
-        private static bool isRunning = false;
-        private static DiscordBotManager discordBotManager;
+        public static bool isRunning = false;
         
         static void Main(string[] args)
         {
@@ -55,47 +54,51 @@ namespace ImmerseYourselfServer
             
             Console.WriteLine($"Number of monitors: {count}");
             
-            // Server.Start(count); TODO: remove temp monitor detect
+            #if !DEBUG
+            Server.Start(count);
+            #else
             Server.Start(2);
+            #endif
+            
             isRunning = true;
 
             Thread mainThread = new Thread(new ThreadStart(MainThread));
             mainThread.Start();
             
-            // try // TODO: uncomment when testing release
-            // {
-            //     string path = AppDomain.CurrentDomain.BaseDirectory;
-            //     int levelsUp = 7; // how many directories to go up
-            //
-            //     for (int i = 0; i < levelsUp; i++)
-            //     {
-            //         path = Directory.GetParent(path)!.FullName;
-            //     }
-            //
-            //     string exePath = Path.Combine(path, "Unity/.Builds/ImmerseYourself.exe");
-            //     
-            //     ProcessStartInfo psi = new ProcessStartInfo()
-            //     {
-            //         FileName = exePath,                     // change to your exe path
-            //         Verb = "runas",                         // request admin privileges
-            //         UseShellExecute = true                  // must be true for Verb to work
-            //     };
-            //
-            //     for (int i = 0; i < count; i++)
-            //     {
-            //         Process.Start(psi);
-            //     }
-            // }
-            // catch (System.ComponentModel.Win32Exception ex)
-            // {
-            //     Console.WriteLine("The user refused the elevation: " + ex.Message);
-            // }
-            // catch (Exception ex)
-            // {
-            //     Console.WriteLine("Error launching process: " + ex.Message);
-            // }
-
-            discordBotManager = new DiscordBotManager();
+            #if !DEBUG
+            try
+            {
+                string path = AppDomain.CurrentDomain.BaseDirectory;
+                int levelsUp = 7; // how many directories to go up
+            
+                for (int i = 0; i < levelsUp; i++)
+                {
+                    path = Directory.GetParent(path)!.FullName;
+                }
+            
+                string exePath = Path.Combine(path, "Unity/.Builds/ImmerseYourself.exe");
+                
+                ProcessStartInfo psi = new ProcessStartInfo()
+                {
+                    FileName = exePath,                     // change to your exe path
+                    Verb = "runas",                         // request admin privileges
+                    UseShellExecute = true                  // must be true for Verb to work
+                };
+            
+                for (int i = 0; i < count; i++)
+                {
+                    Process.Start(psi);
+                }
+            }
+            catch (System.ComponentModel.Win32Exception ex)
+            {
+                Console.WriteLine("The user refused the elevation: " + ex.Message);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error launching process: " + ex.Message);
+            }
+            #endif
         }
 
         private static void MainThread()

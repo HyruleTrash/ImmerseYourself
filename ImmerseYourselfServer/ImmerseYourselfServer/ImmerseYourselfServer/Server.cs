@@ -12,6 +12,7 @@ public class Server
     public delegate void PacketHandler(int fromClient, Packet packet);
     public static Dictionary<int, PacketHandler> packetHandlers;
     public static GameData gameData = new();
+    public static DiscordBotManager discordBotManager;
 
     public static void Start(int maxClients)
     {
@@ -25,6 +26,8 @@ public class Server
         TcpListener.BeginAcceptTcpClient(new AsyncCallback(TCPConnectCallback), null);
         
         Console.WriteLine($"Server started on port {port}");
+        
+        discordBotManager = new DiscordBotManager();
     }
 
     private static void TCPConnectCallback(IAsyncResult ar)
@@ -78,35 +81,42 @@ public class Server
         return full;
     }
     
-    public static void StartGame(MiniGames lastPlayedMiniGame = 0)
+    public static MiniGames? StartGame()
     {
         var isServerFull = IsServerFull();
         Console.WriteLine($"Server full status: {isServerFull}");
         if (!isServerFull || gameData.isPlaying)
-            return;
+            return null;
         Console.WriteLine("Starting game...");
         
         // pick minigame
+        int tries = 0;
+        int maxTries = Enum.GetValues(typeof(MiniGames)).Length;
         var foundGame = EnumExtensions.GetRandomEnumValue<MiniGames>();
-        while (foundGame == lastPlayedMiniGame)
+        while (foundGame == gameData.lastPlayedMiniGame || gameData.playedMiniGamesTemp.PlayedMiniGamesContains(foundGame))
         {
+            tries++;
             foundGame = EnumExtensions.GetRandomEnumValue<MiniGames>();
-            if (foundGame != lastPlayedMiniGame)
+            if (foundGame != gameData.lastPlayedMiniGame && !gameData.playedMiniGamesTemp.PlayedMiniGamesContains(foundGame))
                 break;
+            if (tries > maxTries)
+                return null;
         }
         
         // pick monitor
         var pickedEntry = clients.GetRandomEntry();
-        while (pickedEntry.HasValue == false || gameData.GetLastPickedClientForMiniGame(foundGame) == pickedEntry.Value.Key)
+        while (pickedEntry.HasValue == false || gameData.playedMiniGamesTemp.GetLastPickedClientForMiniGame(foundGame) == pickedEntry.Value.Key)
         {
             pickedEntry = clients.GetRandomEntry();
-            if (pickedEntry.HasValue && gameData.GetLastPickedClientForMiniGame(foundGame) != pickedEntry.Value.Key)
+            if (pickedEntry.HasValue && gameData.playedMiniGamesTemp.GetLastPickedClientForMiniGame(foundGame) != pickedEntry.Value.Key)
                 break;
         }
         
-        ServerSend.StartMiniGame(pickedEntry.Value.Key, foundGame, !gameData.PlayedMiniGamesContains(foundGame));
-        gameData.AddMiniGameToPlayedMiniGames(foundGame, pickedEntry.Value.Key);
+        ServerSend.StartMiniGame(pickedEntry.Value.Key, foundGame, !gameData.playedMiniGames.PlayedMiniGamesContains(foundGame));
+        gameData.playedMiniGames.AddMiniGameToPlayedMiniGames(foundGame, pickedEntry.Value.Key);
+        gameData.playedMiniGamesTemp.AddMiniGameToPlayedMiniGames(foundGame, pickedEntry.Value.Key);
         
         gameData.isPlaying = true;
+        return foundGame;
     }
 }

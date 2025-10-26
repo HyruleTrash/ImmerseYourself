@@ -10,6 +10,7 @@ public class DiscordBotManager
     private readonly DiscordSocketClient client;
     private readonly CommandService commands;
     private const string token = Constants.DISCORD_API_TOKEN;
+    private Dictionary<string, ISocketMessageChannel> registeredChannels = new ();
     
     public class InfoModule : ModuleBase<SocketCommandContext>
     {
@@ -62,11 +63,106 @@ public class DiscordBotManager
             return ReplyAsync(embed: builder.Build());
         }
         
+        [Command("start")]
+        [Summary("starts the game. (you *could* call !next instead)")]
+        public Task StartAsync()
+        {
+            return NextAsync();
+        }
+        
         [Command("next")]
         [Summary("Forces the next mini game to happen.")]
         public Task NextAsync()
         {
-            return ReplyAsync("Next mini game to happen.");
+            MiniGames? game = Server.StartGame();
+            
+            var builder = new EmbedBuilder()
+                .WithTitle("Triggering next mini game")
+                .WithColor(Color.Blue);
+            
+            if (game != null)
+                builder.AddField(x =>
+                {
+                    x.Name = "Next mini game to happen:";
+                    x.Value = $"{game}";
+                    x.IsInline = false;
+                });
+            else
+                builder.AddField(x =>
+                {
+                    x.Name = "No more minigames available.";
+                    x.Value = "Reset and let all minigames be played again? Enter command !reset OR !resetnext";
+                    x.IsInline = false;
+                });
+            
+            return ReplyAsync(embed: builder.Build());
+        }
+        
+        [Command("reset")]
+        [Summary("Resets the available mini games.")]
+        public Task ResetAsync()
+        {
+            Server.gameData.playedMiniGamesTemp.Clear();
+            Console.WriteLine("playedMiniGamesTemp has been cleared. by discord user.");
+            
+            var builder = new EmbedBuilder()
+                .WithTitle("Reset result")
+                .WithColor(Color.Orange);
+            builder.AddField(x =>
+            {
+                x.Name = "Server will now repeat minigames in random order.";
+                x.Value = "(controls will no longer be explained)";
+                x.IsInline = false;
+            });
+            
+            return ReplyAsync(embed: builder.Build());
+        }
+        
+        [Command("resetnext")]
+        [Summary("Resets the available mini games. AND Forces the next mini game to happen.")]
+        public Task ResetNextAsyncCommand()
+        {
+            return ResetNextAsync();
+        }
+
+        private async Task ResetNextAsync()
+        {
+            await ResetAsync();
+            await NextAsync();
+        }
+        
+        [Command("end")]
+        [Summary("Shuts down the server.")]
+        public Task EndAsyncCommand()
+        {
+            return EndAsync();
+        }
+        
+        private async Task EndAsync()
+        {
+            await SendServerEndMessageAsync();
+            await EndServerAsync();
+        }
+
+        private Task SendServerEndMessageAsync()
+        {
+            Console.WriteLine("Server has been stopped. by discord user.");
+            var builder = new EmbedBuilder()
+                .WithTitle("Server shut down received")
+                .WithColor(Color.Red);
+            builder.AddField(x =>
+            {
+                x.Name = "Shutting down...";
+                x.Value = ":dove:";
+                x.IsInline = false;
+            });
+            return ReplyAsync(embed: builder.Build());
+        }
+        
+        private Task EndServerAsync()
+        {
+            ServerProgram.isRunning = false;
+            return Task.CompletedTask;
         }
     }
 
@@ -108,15 +204,31 @@ public class DiscordBotManager
             return;
         var context = new SocketCommandContext(client, message);
         
+        registeredChannels.TryAdd(messageParam.Author.AvatarId, message.Channel);
+        
         await commands.ExecuteAsync(
             context: context, 
             argPos: argPos,
             services: null);
-        // await ReplyAsync(message, "C# response works!");
     }
 
-    private async Task ReplyAsync(SocketMessage message, string response)
+    public void AnnounceMessageAsync(string title, string header, string context)
     {
-        await message.Channel.SendMessageAsync(response);
+        foreach (var (user, messageChannel) in registeredChannels)
+        {
+            Task.Run(async () =>
+            {
+                var builder = new EmbedBuilder()
+                    .WithTitle(title)
+                    .WithColor(Color.Red);
+                builder.AddField(x =>
+                {
+                    x.Name = header;
+                    x.Value = context;
+                    x.IsInline = false;
+                });
+                return messageChannel.SendMessageAsync(embed: builder.Build());
+            });
+        }
     }
 }

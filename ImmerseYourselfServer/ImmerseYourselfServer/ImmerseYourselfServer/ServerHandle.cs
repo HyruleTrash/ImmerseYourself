@@ -11,7 +11,7 @@
             if (clientIdCheck != fromClient)
                 Console.WriteLine($"{temp} has assumed the wrong client ID. monitor ID: {clientIdCheck}");
 
-            Server.StartGame();
+            Server.discordBotManager.AnnounceMessageAsync("Notification", "Monitors are ready to start a minigame", "Enter command !next OR !start");
         }
 
         public static void MiniGameOver(int fromClient, Packet packet)
@@ -21,12 +21,13 @@
             var temp = Server.clients[fromClient].tcp.socket.Client.RemoteEndPoint;
         
             Console.WriteLine($"{temp}: has completed minigame {finishedGame}");
+            Server.discordBotManager.AnnounceMessageAsync("Notification", "Player finished minigame:", finishedGame.ToString());
             
             if (clientIdCheck != fromClient)
                 Console.WriteLine($"{temp} has assumed the wrong client ID. monitor ID: {clientIdCheck}");
             
             Server.gameData.isPlaying = false;
-            Server.StartGame(finishedGame);
+            Server.gameData.lastPlayedMiniGame = finishedGame;
         }
     }
 }

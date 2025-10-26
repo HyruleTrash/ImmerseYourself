@@ -13,6 +13,7 @@ public class ClientHandle : MonoBehaviour
         UIManager.instance.EnableGameUI();
         
         Client.instance.id = id;
+        Client.instance.tcp.isConnected = true;
         // #if !UNITY_EDITOR
         // Client.instance.MoveWindowToMonitor(id);
         // #endif

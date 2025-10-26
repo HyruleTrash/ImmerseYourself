@@ -1,7 +1,9 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Net.Sockets;
+using System.Threading;
 using ImmerseYourselfServer;
 using NUnit.Framework;
 using UnityRawInput;
@@ -29,6 +31,25 @@ public class Client : SingletonBehaviour<Client>
         ConnectToServer();
     }
 
+    private bool waiting = false;
+    private void Update()
+    {
+        if (!waiting && !isConnected)
+        {
+            waiting = true;
+            StartCoroutine(DelayedConnectToServer(2f));
+        }
+    }
+
+    private IEnumerator DelayedConnectToServer(float delaySeconds)
+    {
+        yield return new WaitForSecondsRealtime(delaySeconds);
+        if (!isConnected)
+            ConnectToServer();
+        waiting = false;
+    }
+
+
     private void OnApplicationQuit()
     {
         Disconnect();
@@ -36,6 +57,8 @@ public class Client : SingletonBehaviour<Client>
 
     public void ConnectToServer()
     {
+        Debug.Log("Connecting to server...");
+        
         InitializeClientData();
         
         isConnected = true;
@@ -50,6 +73,9 @@ public class Client : SingletonBehaviour<Client>
         private NetworkStream stream;
         private Packet receivedData;
         private byte[] receiveBuffer;
+        
+        private readonly int timeoutMs = 5;
+        public bool isConnected = false;
 
         public void Connect()
         {
@@ -60,7 +86,19 @@ public class Client : SingletonBehaviour<Client>
             };
             
             receiveBuffer = new byte[dataBufferSize];
+            
+            isConnected = false;
             socket.BeginConnect(instance.ip, instance.port, ConnectCallback, socket);
+            instance.StartCoroutine(ConnectionTimout(timeoutMs));
+        }
+
+        private IEnumerator ConnectionTimout(float delaySeconds)
+        {
+            yield return new WaitForSecondsRealtime(delaySeconds);
+            if (isConnected) yield break;
+            // Handle timeout case
+            socket.Close();
+            Disconnect();
         }
 
         private void ConnectCallback(IAsyncResult ar)

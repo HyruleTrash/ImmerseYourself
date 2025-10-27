@@ -51,6 +51,7 @@ public class ClientHandle : MonoBehaviour
                 continue;
             miniGameComponent.StartMiniGame(shouldShowControls);
             found = true;
+            GUI.FocusWindow(0);
             break;
         }
         if (!found)

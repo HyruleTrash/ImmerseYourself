@@ -70,7 +70,7 @@ public class Server
         Console.WriteLine("Packet handlers have been registered.");
     }
 
-    private static bool IsServerFull()
+    public static bool IsServerFull()
     {
         bool full = true;
         foreach (var (key, client) in clients)

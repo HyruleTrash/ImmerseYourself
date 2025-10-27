@@ -31,8 +31,15 @@ public class ClientHandle : MonoBehaviour
         Client.instance.Disconnect();
     }
     
+    public static void TriggerWait(Packet packet)
+    {
+        Debug.Log("waiting...");
+        UIManager.instance.EnableGameWaitingUI();
+    }
+    
     public static void StartMiniGame(Packet packet)
     {
+        UIManager.instance.DisableGameWaitingUI();
         var miniGameId = (MiniGames)packet.ReadInt();
         var shouldShowControls = packet.ReadBool();
         Debug.Log($"Mini game requested, starting MiniGame {miniGameId}");

@@ -11,6 +11,8 @@
             if (clientIdCheck != fromClient)
                 Console.WriteLine($"{temp} has assumed the wrong client ID. monitor ID: {clientIdCheck}");
 
+            if (!Server.IsServerFull()) return;
+            ServerSend.TriggerMinigameWaitAll();
             Server.discordBotManager.AnnounceMessageAsync("Notification", "Monitors are ready to start a minigame", "Enter command !next OR !start");
         }
 
@@ -28,6 +30,8 @@
             
             Server.gameData.isPlaying = false;
             Server.gameData.lastPlayedMiniGame = finishedGame;
+
+            ServerSend.TriggerMinigameWait(Server.clients[fromClient].tcp);
         }
     }
 }

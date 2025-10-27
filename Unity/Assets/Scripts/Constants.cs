@@ -12,6 +12,7 @@ public enum ServerPackets
     Welcome = 1,
     ServerFull = 2,
     StartMiniGame = 3,
+    ShowWaiting = 4
 }
 
 /// <summary>Sent from client to server.</summary>

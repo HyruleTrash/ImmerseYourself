@@ -9,11 +9,12 @@ public class UIManager : SingletonBehaviour<UIManager>
     private GameObject loadingUI;
     [SerializeField]
     private GameObject inGameUI;
+    [SerializeField]
+    private GameObject inGameWaitingUI;
     
     private void Start()
     {
-        inGameUI.SetActive(false);
-        loadingUI.SetActive(true);
+        DisableGameUI();
     }
 
     public void EnableGameUI()
@@ -24,7 +25,19 @@ public class UIManager : SingletonBehaviour<UIManager>
     
     public void DisableGameUI()
     {
+        DisableGameWaitingUI();
         inGameUI.SetActive(false);
         loadingUI.SetActive(true);
+    }
+    
+    public void EnableGameWaitingUI()
+    {
+        if (inGameUI.activeInHierarchy)
+            inGameWaitingUI.SetActive(true);
+    }
+    
+    public void DisableGameWaitingUI()
+    {
+        inGameWaitingUI.SetActive(false);
     }
 }

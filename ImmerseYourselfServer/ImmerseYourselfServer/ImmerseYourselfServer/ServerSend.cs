@@ -35,6 +35,20 @@
             tcpClient.SendData(packet);
         }
 
+        public static void TriggerMinigameWait(Client.TCP tcpClient)
+        {
+            using var packet = new Packet((int)ServerPackets.ShowWaiting);
+            packet.WriteLength();
+            tcpClient.SendData(packet);
+        }
+        
+        public static void TriggerMinigameWaitAll()
+        {
+            using var packet = new Packet((int)ServerPackets.ShowWaiting);
+            packet.WriteLength();
+            SendTCPDataToAll(packet);
+        }
+
         public static void StartMiniGame(int clientId, MiniGames foundGame, bool shouldShowControls)
         {
             Console.WriteLine($"Starting MiniGame at monitor {clientId}");

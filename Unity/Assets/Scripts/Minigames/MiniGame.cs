@@ -4,6 +4,7 @@ using UnityEngine.Serialization;
 public class MiniGame : MonoBehaviour
 {
     public MiniGames gameId { get; set; }
+    [HideInInspector]
     public bool isGameRunning = false;
 
     public virtual void StartMiniGame(bool shouldShowControls)

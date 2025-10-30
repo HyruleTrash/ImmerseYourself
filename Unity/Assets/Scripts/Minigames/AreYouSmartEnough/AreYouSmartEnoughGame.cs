@@ -9,7 +9,7 @@ using Random = UnityEngine.Random;
 
 public class AreYouSmartEnoughGame : MiniGame
 {
-    [FormerlySerializedAs("keyToStringListener")] [SerializeField]
+    [SerializeField]
     private CalculatorInterprator calculatorInterprator;
     
     [SerializeField]

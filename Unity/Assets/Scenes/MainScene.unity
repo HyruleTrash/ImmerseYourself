@@ -441,7 +441,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MiniGameHolder
   miniGames:
   - {fileID: 1020245934}
-  - {fileID: 1434065263}
 --- !u!1 &362247412
 GameObject:
   m_ObjectHideFlags: 0

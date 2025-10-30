@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "DIYb7CmyVA8=",
+  "dgSpecHash": "QM8S/fIzBHA=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Lucas\\Documents\\School\\HKU\\Immerseyourself\\ImmerseYourselfGame\\ImmerseYourselfServer\\ImmerseYourselfServer\\ImmerseYourselfServer\\ImmerseYourselfServer.csproj",
+  "projectFilePath": "C:\\Users\\Lucas\\Documents\\HKU\\ImmerseYourself\\ImmerseYourselfGame\\ImmerseYourselfServer\\ImmerseYourselfServer\\ImmerseYourselfServer\\ImmerseYourselfServer.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Lucas\\.nuget\\packages\\discord.net\\3.18.0\\discord.net.3.18.0.nupkg.sha512",
     "C:\\Users\\Lucas\\.nuget\\packages\\discord.net.commands\\3.18.0\\discord.net.commands.3.18.0.nupkg.sha512",

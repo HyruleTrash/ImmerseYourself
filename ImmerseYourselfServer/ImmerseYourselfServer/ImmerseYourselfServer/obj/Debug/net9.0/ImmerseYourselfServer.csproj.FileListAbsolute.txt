@@ -42,3 +42,17 @@ C:\Users\Lucas\Documents\School\HKU\Immerseyourself\ImmerseYourselfGame\ImmerseY
 C:\Users\Lucas\Documents\School\HKU\Immerseyourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\System.Reactive.dll
 C:\Users\Lucas\Documents\School\HKU\Immerseyourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\obj\Debug\net9.0\ImmerseYourselfServer.csproj.AssemblyReference.cache
 C:\Users\Lucas\Documents\School\HKU\Immerseyourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\obj\Debug\net9.0\ImmerseY.B2A3F8C0.Up2Date
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\Discord.Net.Commands.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\Discord.Net.Core.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\Discord.Net.Interactions.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\Discord.Net.Rest.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\Discord.Net.Webhook.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\Discord.Net.WebSocket.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\Newtonsoft.Json.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\System.Interactive.Async.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\System.Linq.Async.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\bin\Debug\net9.0\System.Reactive.dll
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\obj\Debug\net9.0\ImmerseYourselfServer.csproj.AssemblyReference.cache
+C:\Users\Lucas\Documents\HKU\ImmerseYourself\ImmerseYourselfGame\ImmerseYourselfServer\ImmerseYourselfServer\ImmerseYourselfServer\obj\Debug\net9.0\ImmerseY.B2A3F8C0.Up2Date

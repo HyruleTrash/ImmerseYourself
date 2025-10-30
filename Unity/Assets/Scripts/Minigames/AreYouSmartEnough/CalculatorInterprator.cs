@@ -16,7 +16,17 @@ public class CalculatorInterprator : MonoBehaviour
         RawKey.Numpad6,
         RawKey.Numpad7,
         RawKey.Numpad8,
-        RawKey.Numpad9
+        RawKey.Numpad9,
+        RawKey.N0,
+        RawKey.N1,
+        RawKey.N2,
+        RawKey.N3,
+        RawKey.N4,
+        RawKey.N5,
+        RawKey.N6,
+        RawKey.N7,
+        RawKey.N8,
+        RawKey.N9
     };
     
     private List<RawKey> hadKeys = new();
@@ -31,9 +41,12 @@ public class CalculatorInterprator : MonoBehaviour
 
     private void UpdateInputString(RawKey key)
     {
+        if (!RawInput.IsRunning)
+            RawInput.Start();
         if (!enabled || hadKeys.Contains(key) || !includeKeys.Contains(key)) return;
         hadKeys.Add(key);
-        inputString += key.ToString().Replace("Numpad", "");
+        string theNumber = key.ToString().Replace("Numpad", "").Replace("N", "");
+        inputString += theNumber;
     }
 
     public void ClearInputString()

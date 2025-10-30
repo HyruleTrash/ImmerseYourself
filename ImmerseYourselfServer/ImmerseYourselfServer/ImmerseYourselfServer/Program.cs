@@ -52,6 +52,7 @@ namespace ImmerseYourselfServer
                 deviceIndex++;
             }
             
+            
             Console.WriteLine($"Number of monitors: {count}");
             
             #if !DEBUG

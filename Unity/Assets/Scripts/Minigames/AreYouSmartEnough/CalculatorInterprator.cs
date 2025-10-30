@@ -37,6 +37,10 @@ public class CalculatorInterprator : MonoBehaviour
     private void Start()
     {
         RawInput.OnKeyDown += UpdateInputString;
+        CalculatorReader.instance.numberCallback += (i) =>
+        {
+            inputString += i;
+        };
     }
 
     private void UpdateInputString(RawKey key)

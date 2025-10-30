@@ -16,6 +16,8 @@ public class PressEnterPrompt : MonoBehaviour
             if (key == RawKey.Return)
                 PressEnter();
         };
+        
+        CalculatorReader.instance.enterCallback += PressEnter;
     }
 
     private void Update()

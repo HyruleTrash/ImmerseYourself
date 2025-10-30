@@ -454,12 +454,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c4fd581e60b4401b850991bcef92cc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CalculatorReader
-  numberCallback:
-    m_PersistentCalls:
-      m_Calls: []
-  enterCallback:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!1 &362247412
 GameObject:
   m_ObjectHideFlags: 0

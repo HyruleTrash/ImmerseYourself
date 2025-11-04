@@ -49,6 +49,7 @@ public class AreYouSmartEnoughGame : MiniGame
     public override void StartMiniGame(bool shouldShowControls)
     {
         base.StartMiniGame(shouldShowControls);
+        CalculatorReader.instance.enabled = true;
         Debug.Log($"Are you smart enough has been started.. showing controls: {shouldShowControls}");
         
         // check state of had questions
@@ -78,6 +79,7 @@ public class AreYouSmartEnoughGame : MiniGame
 
     private void HideAll()
     {
+        CalculatorReader.instance.enabled = false;
         calculatorInterprator.enabled = false;
         timer.gameObject.SetActive(false);
         controls.SetActive(false);
@@ -87,6 +89,8 @@ public class AreYouSmartEnoughGame : MiniGame
 
     public void TriggerQuestionPrompt()
     {
+        calculatorInterprator.ClearInputString();
+        
         timer.gameObject.SetActive(true);
         calculatorInterprator.enabled = true;
         
@@ -173,6 +177,5 @@ public class AreYouSmartEnoughGame : MiniGame
     {
         currentAnswer = "";
         answerText.text = "";
-        calculatorInterprator.ClearInputString();
     }
 }

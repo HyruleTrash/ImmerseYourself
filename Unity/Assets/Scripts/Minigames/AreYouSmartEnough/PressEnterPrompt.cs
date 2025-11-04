@@ -28,6 +28,9 @@ public class PressEnterPrompt : MonoBehaviour
 
     public void PressEnter()
     {
+        Debug.Log(isActiveAndEnabled);
+        if (!enabled)
+            return;
         onEnter.Invoke();
         gameObject.SetActive(false);
         enabled = false;

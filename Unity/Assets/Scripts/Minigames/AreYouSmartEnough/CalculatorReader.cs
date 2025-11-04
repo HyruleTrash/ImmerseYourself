@@ -3,158 +3,135 @@ using System;
 using System.Runtime.InteropServices;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityRawInput;
 
 public class CalculatorReader : SingletonBehaviour<CalculatorReader>
 {
-    private NumberDetector detector;
+    public bool runButton = false;
+    
+    private const int WH_KEYBOARD_LL = 13;
+    private const int WM_KEYDOWN = 0x0100;
+    private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam); // Changed return type to IntPtr
+    private LowLevelKeyboardProc proc;
+    private IntPtr hookId;
 
-    public Action<int> numberCallback
+    public Action<int> numberCallback;
+    public Action enterCallback;
+    
+    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hInstance, uint threadId);
+    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+    [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+    private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+
+    public CalculatorReader()
     {
-        get => detector.numberCallback;
-        set => detector.numberCallback = value;
+        proc = HookCallback;
     }
 
-    public Action enterCallback
+    private uint currentThreadId;
+    public void TurnOn()
     {
-        get => detector.enterCallback;
-        set => detector.enterCallback = value;
-    }
-
-    private void Start()
-    {
-        if (detector == null)
-            detector = new NumberDetector();
-    }
-
-    private void OnDestroy()
-    {
-        detector.Dispose();
-    }
-
-    private void OnDisable()
-    {
-        detector.Dispose();
-    }
-
-    private void OnEnable()
-    {
-        if (detector == null)
-            detector = new NumberDetector();
-    }
-
-    public class NumberDetector : IDisposable
-    {
-        private const int WH_KEYBOARD_LL = 13;
-        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam); // Changed return type to IntPtr
-        private LowLevelKeyboardProc proc;
-        private IntPtr hookId;
-
-        public Action<int> numberCallback;
-        public Action enterCallback;
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hInstance, uint threadId);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr GetModuleHandle(string lpModuleName);
-
-        private const int WM_KEYDOWN = 0x0100;
-
-        public NumberDetector()
+        if (hookId != IntPtr.Zero)
+            return;
+        
+        hookId = SetWindowsHookEx(WH_KEYBOARD_LL, proc, IntPtr.Zero, 0);
+        if (hookId == IntPtr.Zero)
         {
-            proc = HookCallback;
-            hookId = SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(null), 0);
-            numberCallback += log;
+            int errorCode = Marshal.GetLastWin32Error();
+            Debug.LogError($"Failed to set hook: Error code {errorCode}");
         }
-
-        public void log(int a)
+        else
         {
-            Debug.Log(a);
+            Debug.Log($"Hook successful! {hookId}");
         }
-
-        protected virtual void Dispose(bool disposing)
+    }
+    
+    public void TurnOff()
+    {
+        if (hookId != IntPtr.Zero)
         {
-            if (hookId != IntPtr.Zero)
+            bool success = UnhookWindowsHookEx(hookId);
+            hookId = IntPtr.Zero;
+            
+            if (!success)
+                Debug.LogError("Failed to remove hook");
+        }
+    }
+
+    private void Update()
+    {
+        if (runButton)
+        {
+            TurnOn();
+            runButton = false;
+        }
+    }
+
+    private void OnApplicationQuit()
+    {
+        TurnOff();
+    }
+
+    bool temp = false; // I don't know why but 7 and 2 use the same signal, this bool differentiates them
+    private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+    {
+        Debug.Log(nCode);
+        
+        if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
+        {
+            int vkCode = Marshal.ReadInt32(lParam);
+
+            switch (vkCode)
             {
-                UnhookWindowsHookEx(hookId);
-                hookId = IntPtr.Zero;
+                case 0xA0:
+                    temp = true;
+                    break;
+                // Check for numpad numbers (0-9)
+                case 114:
+                    numberCallback?.Invoke(0);
+                    break;
+                case 113:
+                    numberCallback?.Invoke(1);
+                    break;
+                case 122:
+                    if (temp)
+                    {
+                        numberCallback?.Invoke(2);
+                        temp = false;
+                    }
+                    else
+                        numberCallback?.Invoke(7);
+                    break;
+                case 118:
+                    numberCallback?.Invoke(3);
+                    break;
+                case 112:
+                    numberCallback?.Invoke(4);
+                    break;
+                case 121:
+                    numberCallback?.Invoke(5);
+                    break;
+                case 117:
+                    numberCallback?.Invoke(6);
+                    break;
+                case 120:
+                    numberCallback?.Invoke(8);
+                    break;
+                case 116:
+                    numberCallback?.Invoke(9);
+                    break;
+                case 0x0D:
+                case 0xE0:
+                    enterCallback?.Invoke();
+                    break;
+                default:
+                    Debug.Log($"pressed: {vkCode:X4}");
+                    break;
             }
+            Debug.Log($"pressed: {vkCode:X4}");
         }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        bool temp = false; // I don't know why but 7 and 2 use the same signal, this bool differentiates them
-        private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
-        {
-            if (nCode >= 0 && wParam == (IntPtr)WM_KEYDOWN)
-            {
-                int vkCode = Marshal.ReadInt32(lParam);
-
-                switch (vkCode)
-                {
-                    case 0xA0:
-                        temp = true;
-                        break;
-                    // Check for numpad numbers (0-9)
-                    case 114:
-                        numberCallback?.Invoke(0);
-                        break;
-                    case 113:
-                        numberCallback?.Invoke(1);
-                        break;
-                    case 122:
-                        if (temp)
-                        {
-                            numberCallback?.Invoke(2);
-                            temp = false;
-                        }
-                        else
-                            numberCallback?.Invoke(7);
-                        break;
-                    case 118:
-                        numberCallback?.Invoke(3);
-                        break;
-                    case 112:
-                        numberCallback?.Invoke(4);
-                        break;
-                    case 121:
-                        numberCallback?.Invoke(5);
-                        break;
-                    case 117:
-                        numberCallback?.Invoke(6);
-                        break;
-                    case 120:
-                        numberCallback?.Invoke(8);
-                        break;
-                    case 116:
-                        numberCallback?.Invoke(9);
-                        break;
-                    case 0x0D:
-                    case 0xE0:
-                        enterCallback?.Invoke();
-                        break;
-                    default:
-                        Debug.Log($"pressed: {vkCode:X4}");
-                        break;
-                }
-                Debug.Log($"pressed: {vkCode:X4}");
-            }
-            return CallNextHookEx(hookId, nCode, wParam, lParam);
-        }
-
-        ~NumberDetector()
-        {
-            Dispose(false);
-        }
+        return CallNextHookEx(hookId, nCode, wParam, lParam);
     }
 }

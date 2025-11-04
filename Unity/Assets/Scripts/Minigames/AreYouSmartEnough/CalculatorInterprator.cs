@@ -40,6 +40,7 @@ public class CalculatorInterprator : MonoBehaviour
         CalculatorReader.instance.numberCallback += (i) =>
         {
             inputString += i;
+            Debug.Log(inputString);
         };
     }
 

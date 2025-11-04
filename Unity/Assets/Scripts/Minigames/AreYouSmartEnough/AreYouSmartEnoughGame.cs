@@ -49,7 +49,7 @@ public class AreYouSmartEnoughGame : MiniGame
     public override void StartMiniGame(bool shouldShowControls)
     {
         base.StartMiniGame(shouldShowControls);
-        CalculatorReader.instance.enabled = true;
+        CalculatorReader.instance.TurnOn();
         Debug.Log($"Are you smart enough has been started.. showing controls: {shouldShowControls}");
         
         // check state of had questions
@@ -79,7 +79,7 @@ public class AreYouSmartEnoughGame : MiniGame
 
     private void HideAll()
     {
-        CalculatorReader.instance.enabled = false;
+        CalculatorReader.instance.TurnOff();
         calculatorInterprator.enabled = false;
         timer.gameObject.SetActive(false);
         controls.SetActive(false);

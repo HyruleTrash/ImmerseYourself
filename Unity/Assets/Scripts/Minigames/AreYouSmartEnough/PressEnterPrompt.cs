@@ -17,7 +17,7 @@ public class PressEnterPrompt : MonoBehaviour
                 PressEnter();
         };
         
-        CalculatorReader.instance.enterCallback += PressEnter;
+        // CalculatorReader.instance.enterCallback += PressEnter;
     }
 
     private void Update()

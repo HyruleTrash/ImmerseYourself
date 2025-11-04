@@ -7,8 +7,6 @@ using UnityRawInput;
 
 public class CalculatorReader : SingletonBehaviour<CalculatorReader>
 {
-    public bool runButton = false;
-    
     private const int WH_KEYBOARD_LL = 13;
     private const int WM_KEYDOWN = 0x0100;
     private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam); // Changed return type to IntPtr
@@ -29,8 +27,7 @@ public class CalculatorReader : SingletonBehaviour<CalculatorReader>
     {
         proc = HookCallback;
     }
-
-    private uint currentThreadId;
+    
     public void TurnOn()
     {
         if (hookId != IntPtr.Zero)
@@ -57,15 +54,6 @@ public class CalculatorReader : SingletonBehaviour<CalculatorReader>
             
             if (!success)
                 Debug.LogError("Failed to remove hook");
-        }
-    }
-
-    private void Update()
-    {
-        if (runButton)
-        {
-            TurnOn();
-            runButton = false;
         }
     }
 

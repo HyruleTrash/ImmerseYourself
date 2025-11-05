@@ -1419,7 +1419,7 @@ MonoBehaviour:
   wrongAnswerVisual: {fileID: 190198757}
   correctAnswerVisual: {fileID: 1513757145}
   questionList: {fileID: 11400000, guid: 9558b390fec8b0d46a68947fbccdc220, type: 2}
-  maxQuestionsPerRound: 4
+  maxQuestionsPerRound: 10
 --- !u!224 &1020245935
 RectTransform:
   m_ObjectHideFlags: 0

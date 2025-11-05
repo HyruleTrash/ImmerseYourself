@@ -36,7 +36,7 @@ public class AreYouSmartEnoughGame : MiniGame
     
     private int hadQuestionsCount;
     [SerializeField]
-    private int maxQuestionsPerRound = 4;
+    private int maxQuestionsPerRound = 10;
     
     private void Start()
     {

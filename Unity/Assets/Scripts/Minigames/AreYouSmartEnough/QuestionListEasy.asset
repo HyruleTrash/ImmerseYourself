@@ -1,0 +1,57 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a947aaa3dcc2b4c46906c46cb0b34549, type: 3}
+  m_Name: QuestionListEasy
+  m_EditorClassIdentifier: Assembly-CSharp::QuestionList
+  questions:
+  - question: 7 + 6
+    answer: 13
+  - question: 24 - 7
+    answer: 17
+  - question: 172 + 46
+    answer: 218
+  - question: 113 - 41
+    answer: 72
+  - question: 78 - 18
+    answer: 60
+  - question: 69 + 69
+    answer: 138
+  - question: 2 + 8
+    answer: 10
+  - question: 71 + 6
+    answer: 77
+  - question: 111 - 21
+    answer: 90
+  - question: 73 - 71
+    answer: 2
+  - question: 76 - 24
+    answer: 52
+  - question: 76 - 24
+    answer: 52
+  - question: 42 - 16
+    answer: 26
+  - question: 1 + 6
+    answer: 7
+  - question: 9 + 7
+    answer: 16
+  - question: 17 - 6
+    answer: 11
+  - question: 8 - 2
+    answer: 6
+  - question: 163 - 24
+    answer: 139
+  - question: 186 - 121
+    answer: 65
+  - question: 17 - 6
+    answer: 11
+  - question: 4 - 4
+    answer: 0

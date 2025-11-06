@@ -33,10 +33,10 @@ public class Timer : MonoBehaviour
 
     public void SetMaxTimeShorter()
     {
-        if (maxTime - 1 <= 0)
-            maxTime = minTime;
-        else
-            maxTime -= maxTimeDecrementation;
+        // if (maxTime - 1 <= 0)
+        //     maxTime = minTime;
+        // else
+        //     maxTime -= maxTimeDecrementation;
     }
 
     public void StartTimer()
